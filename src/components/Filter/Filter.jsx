@@ -8,6 +8,7 @@ export const Filter = ({onChange}) => {
     </>
   );
 };
+
 Filter.propTypes = {
   onChange: PropTypes.func.isRequired
 }

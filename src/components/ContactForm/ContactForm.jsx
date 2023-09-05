@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { nanoid } from 'nanoid';
 import PropTypes from 'prop-types';
 
 export const ContactForm = ({ onSubmit }) => {
@@ -7,7 +6,7 @@ export const ContactForm = ({ onSubmit }) => {
 
   const handleSubmit = evt => {
     evt.preventDefault();
-    onSubmit({...contact,id: nanoid()});
+    onSubmit(contact);
     setContact({ name: '', number: '' });
   };
 

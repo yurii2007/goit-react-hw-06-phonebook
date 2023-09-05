@@ -1,42 +1,32 @@
-import { useState } from 'react';
 import { ContactForm } from './ContactForm/ContactForm';
 import { Filter } from './Filter/Filter';
 import { ContactList } from './ContactList/ContactList';
-import { useLocalStorage } from 'hooks/useLocalStorage';
-
-const initializedState = [];
-const LOCAL_STORAGE_KEY = 'contacts';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact, deleteContact } from 'redux/contacts/contactsSlice';
+import { changeFilter } from 'redux/filter/filterSlice';
 
 export const App = () => {
-  const [contacts, setContacts] = useLocalStorage(
-    LOCAL_STORAGE_KEY,
-    initializedState
-  );
-  const [filter, setFilter] = useState('');
+  const contacts = useSelector(state=>state.contacts);
+  const filter = useSelector(state=>state.filter);
+  const dispatch = useDispatch();
 
   const handleAddContact = newContact => {
-    const isExist = contacts.find(
-      contact => newContact.name.toLowerCase() === contact.name.toLowerCase()
-    );
-    if (isExist) return alert(`${newContact.name} is already in contacts`);
-    setContacts(prevContacts => [...prevContacts, newContact]);
+    dispatch(addContact(newContact));
   };
 
-  const handleFilter = event => {
-    setFilter(event.target.value);
+  const filterChange = event => {
+    dispatch(changeFilter(event.target.value))
   };
 
   const getFilteredContacts = () => {
-    return [...contacts].filter(({ name }) =>
-      name.toLowerCase().includes(filter.toLowerCase())
-    )
+    return contacts.filter(contact=>contact.name.toLowerCase().includes(filter))
   };
 
   const handleDeleteContact = contactId => {
-    setContacts(prevContacts=>prevContacts.filter(({ id }) => id !== contactId));
+    dispatch(deleteContact(contactId))
   };
 
-  const filteredContacts = getFilteredContacts();
+  const filteredContacts = getFilteredContacts()
   return (
     <div>
       <h1>Phonebook</h1>
@@ -46,7 +36,7 @@ export const App = () => {
         <p>You didn't have any contacts yet</p>
       ) : (
         <>
-          <Filter onChange={handleFilter} />
+          <Filter onChange={filterChange} />
           <ContactList
             contacts={filteredContacts}
             onDelete={handleDeleteContact}
